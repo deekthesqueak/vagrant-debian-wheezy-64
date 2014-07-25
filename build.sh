@@ -22,7 +22,7 @@ set -o errexit
 #set -o xtrace
 
 # Configurations
-BOX="debian-wheezy-64"
+BOX="wheezy64"
 ISO_URL="http://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-7.6.0-amd64-netinst.iso"
 ISO_SHA256="ab1008f5460c66e4ab601958ffd6df15bc274ffb3d83072830e8b577c699a429"
 
@@ -129,11 +129,7 @@ if [ ! -e "${FOLDER_ISO}/custom.iso" ]; then
   # stick in our new initrd.gz
   echo "Installing new initrd.gz ..."
   cd "${FOLDER_ISO_INITRD}"
-  if [ "$OSTYPE" = "msys" ]; then
-    gunzip -c "${FOLDER_ISO_CUSTOM}/install/initrd.gz.org" | cpio -i --make-directories || true
-  else
-    gunzip -c "${FOLDER_ISO_CUSTOM}/install/initrd.gz.org" | cpio -id || true
-  fi
+  gunzip -c "${FOLDER_ISO_CUSTOM}/install/initrd.gz.org" | cpio -id || true
   cd "${FOLDER_BASE}"
   if [ "${PRESEED}" != "${DEFAULT_PRESEED}" ] ; then
     echo "Using custom preseed file ${PRESEED}"
