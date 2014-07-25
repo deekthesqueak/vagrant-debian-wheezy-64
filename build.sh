@@ -23,8 +23,8 @@ set -o errexit
 
 # Configurations
 BOX="debian-wheezy-64"
-ISO_URL="http://cdimage.debian.org/debian-cd/7.5.0/amd64/iso-cd/debian-7.5.0-amd64-netinst.iso"
-ISO_MD5="8fdb6715228ea90faba58cb84644d296"
+ISO_URL="http://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-7.6.0-amd64-netinst.iso"
+ISO_SHA256="ab1008f5460c66e4ab601958ffd6df15bc274ffb3d83072830e8b577c699a429"
 
 # location, location, location
 FOLDER_BASE=$(pwd)
@@ -58,13 +58,7 @@ else
   PORTCOUNT="--portcount 1"
 fi
 
-if [ "$OSTYPE" = "linux-gnu" ]; then
-  MD5="md5sum"
-elif [ "$OSTYPE" = "msys" ]; then
-  MD5="md5 -l"
-else
-  MD5="md5 -q"
-fi
+SHA256="shasum -a 256"
 
 # start with a clean slate
 if VBoxManage list runningvms | grep "${BOX}" >/dev/null 2>&1; then
@@ -106,11 +100,11 @@ if [ ! -e "${ISO_FILENAME}" ]; then
 fi
 
 # make sure download is right...
-ISO_HASH=$($MD5 "${ISO_FILENAME}" | cut -d ' ' -f 1)
-if [ "${ISO_MD5}" != "${ISO_HASH}" ]; then
-  echo "ERROR: MD5 does not match. Got ${ISO_HASH} instead of ${ISO_MD5}. Aborting."
+ISO_HASH=$($SHA256 "${ISO_FILENAME}" | cut -d ' ' -f 1)
+if [ "${ISO_SHA256}" != "${ISO_HASH}"]; then
+  echo "ERROR: SHA256 does not match. Got ${ISO_HASH} instead of ${ISO_SHA256}. Aborting."
   exit 1
-fi
+fi 
 
 # customize it
 echo "Creating Custom ISO"
